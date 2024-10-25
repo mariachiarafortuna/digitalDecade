@@ -53,4 +53,22 @@ overall_eb_scores <- read_excel(here("data/6_eGovernment_Benchmark_2024__Final_R
 
 ###### FOCUS ONLINE AVAILABILITY
 
+oa_24 <- nat24_data[,c(1,3:15)] %>%
+  arrange(`Life event`, `Service`) %>%
+  mutate(A1_available_info = case_when(`A1: information available online?` == "Yes" ~ 1, TRUE ~ 0),
+         A2_available_service = case_when(`A2: service available online?` == "Yes" ~ 1, TRUE ~ 0),
+         A3_available_portal = case_when(`A3: available through portal?` == "Yes" ~ 1, TRUE ~ 0))
 
+summary_nat_services <- oa_24 %>%
+  group_by(`Life event`, `Service`) %>%
+  summarise(Portali = n(),
+            `Informazione disponibile` = sum(A1_available_info)/n()*100,
+            `Servizio disponibile` = sum(A2_available_service)/n()*100,
+            `Presenza nel portale` = sum(A3_available_portal)/n()*100)
+
+summary_nat_life_events <- oa_24 %>%
+  group_by(`Life event`) %>%
+  summarise(`Portali esaminati` = n(),
+            `Informazione disponibile` = round(sum(A1_available_info)/n()*100,2),
+            `Servizio disponibile` = round(sum(A2_available_service)/n()*100,2),
+            `Presenza nel portale` = round(sum(A3_available_portal)/n()*100,2))
